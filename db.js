@@ -1,5 +1,30 @@
+const mysql = require("mysql2");
+ 
+// Create connection pool
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+ 
+// Test DB connection
+const connect = () => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error("User Service DB connection failed:", err);
+    } else {
+      console.log("User Service DB connected");
+      connection.release();
+    }
+  });
+};
+ 
 module.exports = {
-  connect: () => {
-    console.log("User Service DB connected");
-  }
+  pool,
+  connect
 };
